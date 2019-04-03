@@ -5,7 +5,7 @@
 2. ~~Scaffold your repo with the usual README, CSS, JS, and HTML files, plus a img/ directory.~~
 3. ~~Include in your repository a .eslintrc.json file whose contents are copied from the eslintrc.json file in the class repository.~~
 4. ~~Retrieve the assets from the assets/ directory and place them in your image directory.~~
-5. Write your user stories as described above and place them in a file called user_stories.md in your repo. Utilize good Markdown style to make this document look nice.
+5. ~~Write your user stories as described above and place them in a file called user_stories.md in your repo. Utilize good Markdown style to make this document look nice.~~
 6. The thing you want to build today will select three random photos from the image directory and display them side-by-side-by-side in the browser window.
 7. In addition, you'll want to be able to receive clicks on those displayed images, and track those clicks for each image. You'll also want to track how many times each image is displayed, for statistical purposes.
 8. Upon receiving a click, three new non-duplicating random images need to be automatically displayed. In other words, the three images that are displayed should contain no duplicates, nor should they duplicate with any images that we displayed immediately before.

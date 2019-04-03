@@ -1,26 +1,30 @@
 body {
   width: 960px;
+  margin: 10px auto;
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: 100px 250px;
+  grid-gap: 20px;
 }
 
 header {
   grid-column-start: 1;
   grid-column-end: last;
-  background-color: red;
+  background-color: #040926;
+  color: white;
 }
 
-.productCell {
+body div {
   outline: 2px solid black;
-  background-color: aqua;
 }
+
 #productPos1 {
   grid-column-start: 1;
   grid-column-end: 5;
 }
 
-/* #productPos2 {
+
+#productPos2 {
   grid-column-start: 5;
   grid-column-end: 9;
 }
@@ -28,10 +32,19 @@ header {
 #productPos3 {
   grid-column-start: 9;
   grid-column-end: last;
-} */
+}
 
-#results {
+div img {
+  height: 250px;
+  width: auto;
+  display: block;
+  margin: 0px auto;
+}
+
+section {
+  background-color: #251351;
+  color:white; 
   grid-column-start: 1;
-  grid-column-end: 12;
+  grid-column-end: 6;
 
 }
