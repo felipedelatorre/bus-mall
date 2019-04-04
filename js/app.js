@@ -1,10 +1,12 @@
 'use strict';
 
 var PRODUCTLIST = {};
-var PRODUCTNAMES = ['bag', 'banana', 'bathroom', 'boots', 'breakfast', 'bubblegum', 'chair','cthulhu', 'dog-duck', 'dragon', 'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun', 'unicorn', 'usb', 'water-can', 'wine-glass'];
+var PRODUCT_FILE_NAME = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg', 'bubblegum.jpg', 'chair.jpg','cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg', 'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg', 'unicorn.jpg', 'usb.gif', 'water-can.jpg', 'wine-glass.jpg'];
 var REPETITIONTRACKER = [];
 var SELECTIONCOUNTER = 1;
 
+
+// Obj and Prototypes
 
 function Product(htmlId, name, filePath) {
   this.htmlId = htmlId;
@@ -16,16 +18,15 @@ function Product(htmlId, name, filePath) {
   PRODUCTLIST[htmlId] = this;
 }
 
-Product.prototype.render = function(parentId) {
+Product.prototype.renderToChildElement = function(parentId) {
   this.totalViews++;
-  var parent = document.getElementById(parentId);
-  var img = document.createElement('img');
-  img.setAttribute('id', this.htmlId);
-  img.setAttribute('src', this.filePath);
-  img.setAttribute('class', 'productCell');
-  parent.appendChild(img);
-
+  var childElement = document.getElementById(parentId).firstElementChild;
+  childElement.src = this.filePath;
+  childElement.id = this.htmlId;
 };
+
+
+
 
 
 // https://stackoverflow.com/questions/1026069/how-do-i-make-the-first-letter-of-a-string-uppercase-in-javascript
@@ -33,11 +34,17 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
+function removeFileExtension(string) {
+  var removefrom  = string.indexOf('.');
+  string = string.slice(0, removefrom);
+  return string;
+}
+
 function createProductObjects() {
-  PRODUCTNAMES.forEach(element => {
-    var name = capitalizeFirstLetter(element);
-    var htmlId = element;
-    var filePath = `./img/${element}.jpg`;
+  PRODUCT_FILE_NAME.forEach(element => {
+    var htmlId = removeFileExtension(element);
+    var name = capitalizeFirstLetter(htmlId);
+    var filePath = `./img/${element}`;
     new Product (htmlId, name, filePath);
   });
 }
@@ -46,22 +53,25 @@ function getRandomNumber(max, min) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
-function getRandomPicture() {
-  var randomIndex = getRandomNumber(PRODUCTNAMES.length, 0);
-  return PRODUCTNAMES[randomIndex];
+function getRandomImageName() {
+  var randomIndex = getRandomNumber(PRODUCT_FILE_NAME.length, 0);
+  var randomImageName = PRODUCT_FILE_NAME[randomIndex];
+  randomImageName = removeFileExtension(randomImageName);
+  return randomImageName;
 }
+
 
 
 function fillSelectionWithNewPictures() {
   for (var i = 0; i < 3; i++) { // Magic Number
-    var randomPic = getRandomPicture();
-    while (REPETITIONTRACKER.includes(randomPic)) {
-      randomPic = getRandomPicture();
+    var randomImageName = getRandomImageName();
+    
+    while (REPETITIONTRACKER.includes(randomImageName)) {
+      randomImageName = getRandomImageName();
     }
-    PRODUCTLIST[randomPic].render(`productPos${i+1}`);
-    REPETITIONTRACKER.push(PRODUCTLIST[randomPic].htmlId);
+    PRODUCTLIST[randomImageName].renderToChildElement(`productPos${i+1}`);
+    REPETITIONTRACKER.push(PRODUCTLIST[randomImageName].htmlId);
   }
-
   if (REPETITIONTRACKER.length > 6) { // Magic Number
     REPETITIONTRACKER.shift();
     REPETITIONTRACKER.shift();
@@ -69,32 +79,20 @@ function fillSelectionWithNewPictures() {
   }
 }
 
-function removePicturesAfterClick(parentId1, parentId2, parentId3) {
-  var parent = document.getElementById(parentId1);
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-  parent = document.getElementById(parentId2);
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-  parent = document.getElementById(parentId3);
-  while (parent.firstChild) {
-    parent.removeChild(parent.firstChild);
-  }
-}
+// For list
 
-function displayListOfProductsWithVotes(parentId) {
-  var li = document.createElement('li');
-  li.txtContent = 'Hello';
-  parentId.appendChild(li);
-}
+// function displayListOfProductsWithVotes(parentId) {
+//   var li = document.createElement('li');
+//   li.txtContent = 'Hello';
+//   parentId.appendChild(li);
+// }
 
 
 //----------------
 // At first load
 //----------------
 createProductObjects();
+
 fillSelectionWithNewPictures();
 
 
@@ -102,14 +100,11 @@ fillSelectionWithNewPictures();
 // Events
 //---------------
 var body = document.getElementById('body');
-var ul = document.getElementById('resultsList');
 
 function recordClicks(event) {
   if (event.target.className === 'productCell') {
     var id = event.target.id;
     PRODUCTLIST[id].totalClicks++;
-
-    removePicturesAfterClick('productPos1', 'productPos2', 'productPos3');
     fillSelectionWithNewPictures();
     SELECTIONCOUNTER++;
     console.log(SELECTIONCOUNTER);
@@ -117,9 +112,7 @@ function recordClicks(event) {
       body.removeEventListener('click', recordClicks);
     }
   }
-
-  displayListOfProductsWithVotes(ul);
-
+  // displayListOfProductsWithVotes(ul);
 }
 
 body.addEventListener('click', recordClicks);
