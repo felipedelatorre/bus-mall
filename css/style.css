@@ -48,3 +48,9 @@ section {
   grid-column-end: 6;
 
 }
+
+#chart {
+  background-color: #ffffff;
+  grid-column-start: 1;
+  grid-column-end: 13;
+}

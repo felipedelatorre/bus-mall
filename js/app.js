@@ -5,6 +5,10 @@ var PRODUCT_FILE_NAME = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', '
 var REPETITIONTRACKER = [];
 var SELECTIONCOUNTER = 1;
 
+var STATE_KEY = 'votingState';
+var votingState = {};
+
+
 
 // Obj and Prototypes
 
@@ -79,20 +83,113 @@ function fillSelectionWithNewPictures() {
   }
 }
 
+//----------------
 // For list
+//----------------
 
-// function displayListOfProductsWithVotes(parentId) {
-//   var li = document.createElement('li');
-//   li.txtContent = 'Hello';
-//   parentId.appendChild(li);
-// }
+function displayListOfProductsWithVotes() {
+  var parent = document.getElementById('resultsList');
+
+  for (var i = 0; i < Object.keys(PRODUCTLIST).length; i++) {
+    var li = document.createElement('li');
+    var productName = Object.keys(PRODUCTLIST)[i];
+    var productTotal = Object.values(PRODUCTLIST)[i].totalClicks;
+    li.textContent = `${productTotal} votes for ${productName}`;
+    parent.appendChild(li);
+  }
+}
+
+//----------------
+// For Chart
+//----------------
+
+function createBarGraph() {
+  var ctx = document.getElementById('myChart');
+
+  var arrOfProducts = Object.keys(PRODUCTLIST);
+  var arrOfTotals = [];
+
+  for (var i = 0; i < Object.keys(PRODUCTLIST).length; i++) {
+    arrOfTotals.push(Object.values(PRODUCTLIST)[i].totalClicks);
+  }
+
+  var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: arrOfProducts,
+      datasets: [{
+        label: '# of Votes',
+        data: arrOfTotals,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(255, 99, 132, 0.2)',
+          'rgba(54, 162, 235, 0.2)',
+          'rgba(255, 206, 86, 0.2)'
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
+
+function setStateToLocalStorage() {
+  localStorage.setItem(STATE_KEY, JSON.stringify(votingState));
+}
 
 
 //----------------
 // At first load
 //----------------
 createProductObjects();
-
 fillSelectionWithNewPictures();
 
 
@@ -105,14 +202,20 @@ function recordClicks(event) {
   if (event.target.className === 'productCell') {
     var id = event.target.id;
     PRODUCTLIST[id].totalClicks++;
+    votingState.numberOfTotalVotes++;
+    setStateToLocalStorage();
+
     fillSelectionWithNewPictures();
     SELECTIONCOUNTER++;
-    console.log(SELECTIONCOUNTER);
     if (SELECTIONCOUNTER > 25) {
       body.removeEventListener('click', recordClicks);
+      displayListOfProductsWithVotes();
+      createBarGraph();
+
+
     }
   }
-  // displayListOfProductsWithVotes(ul);
 }
 
 body.addEventListener('click', recordClicks);
+
